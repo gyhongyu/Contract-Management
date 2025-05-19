@@ -17,8 +17,7 @@ Lightweight, powerful open-source Python contract app: simple, secure. Instant s
 ## Local Deployment
 1. Clone the repository:
 ```
-git clone https://github.com/gyhongyu/
-Contract-Management.git
+git clone https://github.com/gyhongyu/Contract-Management.git
 cd Contract-Management
 ```
 2. Install dependencies:
