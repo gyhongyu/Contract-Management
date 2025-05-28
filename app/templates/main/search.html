@@ -2,72 +2,72 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>Search Contracts</h1>
+    <h1>{{ _("search_contracts") }}</h1>
     
     <form method="get" action="{{ url_for('main.search_contracts') }}" class="mb-4">
         <div class="row g-3">
             <div class="col-md-4">
-                {{ form.contract_id.label(class="form-label") }}
-                {{ form.contract_id(class="form-control") }}
+                <label class="form-label">{{ _('contract_id') }}</label>
+                {{ form.contract_id(class="form-control", placeholder=_('enter_contract_id')) }}
             </div>
             <div class="col-md-4">
-                {{ form.subject.label(class="form-label") }}
-                {{ form.subject(class="form-control") }}
+                <label class="form-label">{{ _('subject') }}</label>
+                {{ form.subject(class="form-control", placeholder=_('enter_subject')) }}
             </div>
             <div class="col-md-4">
-                {{ form.summary.label(class="form-label") }}
-                {{ form.summary(class="form-control") }}
+                <label class="form-label">{{ _('summary') }}</label>
+                {{ form.summary(class="form-control", placeholder=_('enter_summary')) }}
             </div>
         </div>
         
         <div class="row g-3 mt-2">
             <div class="col-md-4">
-                {{ form.division_code.label(class="form-label") }}
+                <label class="form-label">{{ _('division_code') }}</label>
                 {{ form.division_code(class="form-control") }}
             </div>
             <div class="col-md-4">
-                {{ form.category_code.label(class="form-label") }}
+                <label class="form-label">{{ _('category_code') }}</label>
                 {{ form.category_code(class="form-control") }}
             </div>
             <div class="col-md-4">
-                {{ form.type_code.label(class="form-label") }}
+                <label class="form-label">{{ _('type_code') }}</label>
                 {{ form.type_code(class="form-control") }}
             </div>
         </div>
         
         <div class="row g-3 mt-2">
             <div class="col-md-4">
-                {{ form.date_from.label(class="form-label") }}
+                <label class="form-label">{{ _('date_from') }}</label>
                 {{ form.date_from(class="form-control", type="date") }}
             </div>
             <div class="col-md-4">
-                {{ form.date_to.label(class="form-label") }}
+                <label class="form-label">{{ _('date_to') }}</label>
                 {{ form.date_to(class="form-control", type="date") }}
             </div>
         </div>
         
         <div class="mt-3">
             <input type="hidden" name="search" value="true">
-            <button type="submit" class="btn btn-primary" title="Search">
-                <i class="bi bi-search"></i>
+            <button type="submit" class="btn btn-primary" title="{{ _('search') }}">
+                <i class="bi bi-search"></i> {{ _("search") }}
             </button>
-            <a href="{{ url_for('main.index') }}" class="btn btn-secondary" title="Back to Contract List">
-                <i class="bi bi-arrow-left"></i>
+            <a href="{{ url_for('main.index') }}" class="btn btn-secondary" title="{{ _('back_to_list') }}">
+                <i class="bi bi-arrow-left"></i> {{ _("back_to_list") }}
             </a>
         </div>
     </form>
     
     {% if is_search %}
     <div class="mt-4">
-        <h2>Search Results</h2>
+        <h2>{{ _("search_results") }}</h2>
         {% if contracts %}
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Contract ID</th>
-                    <th>Subject</th>
-                    <th>Valid From</th>
-                    <th>Actions</th>
+                    <th>{{ _("contract_id") }}</th>
+                    <th>{{ _("subject") }}</th>
+                    <th>{{ _("valid_from") }}</th>
+                    <th>{{ _("actions") }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -77,14 +77,14 @@
                     <td>{{ contract.subject }}</td>
                     <td>{{ contract.valid_from.strftime('%Y-%m-%d') }}</td>
                     <td>
-                        <a href="{{ url_for('main.view_contract', contract_id=contract.contract_id) }}" class="btn btn-sm btn-info" title="View">
+                        <a href="{{ url_for('main.view_contract', contract_id=contract.contract_id) }}" class="btn btn-sm btn-info" title="{{ _('view') }}">
                             <i class="bi bi-eye"></i>
                         </a>
                         {% if current_user.is_admin %}
-                        <a href="{{ url_for('main.edit_contract', contract_id=contract.contract_id) }}" class="btn btn-sm btn-warning" title="Edit">
+                        <a href="{{ url_for('main.edit_contract', contract_id=contract.contract_id) }}" class="btn btn-sm btn-warning" title="{{ _('edit') }}">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ contract.contract_id }}" title="Delete">
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ contract.contract_id }}" title="{{ _('delete') }}">
                             <i class="bi bi-trash"></i>
                         </button>
                         {% endif %}
@@ -92,20 +92,20 @@
                 </tr>
 
                 <!-- 删除确认模态框 -->
-                <div class="modal fade" id="deleteModal{{ contract.contract_id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ contract.contract_id }}" aria-hidden="true">
+                <div class="modal fade" id="deleteModal{{ contract.contract_id }}" tabindex="-1">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="deleteModalLabel{{ contract.contract_id }}">Confirm Delete</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <h5 class="modal-title">{{ _("confirm_delete") }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
-                                Are you sure you want to delete contract <strong>{{ contract.contract_id }}</strong>?
+                                {{ _("confirm_delete_contract", contract_id=contract.contract_id) }}
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _("cancel") }}</button>
                                 <form action="{{ url_for('main.delete_contract', contract_id=contract.contract_id) }}" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-danger">{{ _("delete") }}</button>
                                 </form>
                             </div>
                         </div>
@@ -115,7 +115,7 @@
             </tbody>
         </table>
         {% else %}
-        <p>No contracts found.</p>
+        <p>{{ _("no_contracts_found") }}</p>
         {% endif %}
     </div>
     {% endif %}

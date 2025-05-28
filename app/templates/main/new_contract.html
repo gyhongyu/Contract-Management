@@ -1,198 +1,166 @@
 {% extends "base.html" %}
 
-{% block title %}New Contract{% endblock %}
-
 {% block content %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>New Contract</h2>
-        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Back to List
-        </a>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>{{ _('new_contract') }}</h2>
+        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">{{ _('back_to_list') }}</a>
     </div>
 
-    <form method="POST" class="needs-validation" novalidate>
+    <form method="POST" action="" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
-        
-        <!-- 基本信息 -->
-        <div class="card mb-4">
+
+        <div class="card mb-3">
             <div class="card-header">
-                <h5 class="card-title mb-0">Basic Information</h5>
+                <h5>{{ _('basic_information') }}</h5>
             </div>
             <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-12">
-                        <label for="subject" class="form-label">{{ form.subject.label }}</label>
-                        {{ form.subject(class="form-control", maxlength="256") }}
-                        <div class="form-text">Maximum 256 characters</div>
-                        {% if form.subject.errors %}
-                            {% for error in form.subject.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="col-md-12">
-                        <label for="summary" class="form-label">{{ form.summary.label }}</label>
-                        {{ form.summary(class="form-control", rows=3) }}
-                        {% if form.summary.errors %}
-                            {% for error in form.summary.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                    <div class="col-md-12">
-                        <label for="downloadLink" class="form-label">{{ form.downloadLink.label }}</label>
-                        {{ form.downloadLink(class="form-control", maxlength="512") }}
-                        <div class="form-text">Please provide a Google Drive link (maximum 512 characters)</div>
-                        {% if form.downloadLink.errors %}
-                            {% for error in form.downloadLink.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ _('subject') }}</label>
+                    {{ form.subject(class="form-control") }}
+                    <small class="form-text text-muted">{{ _('maximum_256_characters') }}</small>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ _('summary') }}</label>
+                    {{ form.summary(class="form-control", rows=3) }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">{{ _("contract_link") }}</label>
+                    {{ form.downloadLink(class="form-control") }}
+                    {% if form.downloadLink.errors %}
+                        {% for error in form.downloadLink.errors %}
+                            <small class="text-danger">{{ _(error) }}</small>
+                        {% endfor %}
+                    {% endif %}
+                    <small class="form-text text-muted">{{ _("provide_url_max_512") }}</small>
                 </div>
             </div>
         </div>
 
-        <!-- 分类信息 -->
-        <div class="card mb-4">
+        <div class="card mb-3">
             <div class="card-header">
-                <h5 class="card-title mb-0">Classification</h5>
+                <h5>{{ _('classification') }}</h5>
             </div>
             <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label for="division_code" class="form-label">{{ form.division_code.label }}</label>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">{{ _('division_code') }}</label>
                         {{ form.division_code(class="form-select") }}
-                        {% if form.division_code.errors %}
-                            {% for error in form.division_code.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
                     </div>
-                    <div class="col-md-4">
-                        <label for="category_code" class="form-label">{{ form.category_code.label }}</label>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">{{ _('category_code') }}</label>
                         {{ form.category_code(class="form-select") }}
-                        {% if form.category_code.errors %}
-                            {% for error in form.category_code.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
                     </div>
-                    <div class="col-md-4">
-                        <label for="type_code" class="form-label">{{ form.type_code.label }}</label>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">{{ _('type_code') }}</label>
                         {{ form.type_code(class="form-select") }}
-                        {% if form.type_code.errors %}
-                            {% for error in form.type_code.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                            {% endfor %}
-                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 日期信息 -->
-        <div class="card mb-4">
+        <div class="card mb-3">
             <div class="card-header">
-                <h5 class="card-title mb-0">Validity Period</h5>
+                <h5>{{ _('validity_period') }}</h5>
             </div>
             <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="valid_from" class="form-label">{{ form.valid_from.label }}</label>
-                        {{ form.valid_from(class="form-control", type="date") }}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ _('valid_from') }}</label>
+                        {{ form.valid_from(class="form-control") }}
                         {% if form.valid_from.errors %}
                             {% for error in form.valid_from.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                <div class="invalid-feedback d-block">{{ _(error) }}</div>
                             {% endfor %}
                         {% endif %}
                     </div>
-                    <div class="col-md-6">
-                        <label for="valid_to" class="form-label">{{ form.valid_to.label }}</label>
-                        {{ form.valid_to(class="form-control", type="date") }}
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">{{ _('valid_to') }}</label>
+                        {{ form.valid_to(class="form-control") }}
                         {% if form.valid_to.errors %}
                             {% for error in form.valid_to.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                <div class="invalid-feedback d-block">{{ _(error) }}</div>
                             {% endfor %}
                         {% endif %}
                     </div>
-                    <div class="col-md-12">
-                        <div class="form-check">
-                            {{ form.no_expiry(class="form-check-input") }}
-                            <label class="form-check-label" for="no_expiry">{{ form.no_expiry.label }}</label>
-                        </div>
-                    </div>
-
-                    <!-- 合同ID预览 -->
-                    <div class="col-12">
-                        <label for="preview_contract_id" class="form-label">Contract ID Preview</label>
-                        {{ form.preview_contract_id(class="form-control", readonly=true) }}
-                        <div class="form-text">This is a preview of the contract ID that will be generated.</div>
-                    </div>
+                </div>
+                <div class="mb-3 form-check">
+                    {{ form.no_expiry(class="form-check-input") }}
+                    <label class="form-check-label">{{ _('no_expiry_date') }}</label>
                 </div>
             </div>
         </div>
 
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <a href="{{ url_for('main.index') }}" class="btn btn-secondary me-md-2">Cancel</a>
-            <button type="submit" class="btn btn-primary">Create Contract</button>
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5>{{ _('contract_id_preview') }}</h5>
+            </div>
+            <div class="card-body">
+                <p id="contract-id-preview">{{ _('preview_contract_id_generated') }}</p>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            {{ form.submit(class="btn btn-primary", value=_('create_contract_button')) }}
+            <a href="{{ url_for('main.index') }}" class="btn btn-secondary">{{ _('cancel') }}</a>
         </div>
     </form>
 </div>
 
+{% endblock %}
+
 {% block scripts %}
 {{ super() }}
 <script>
-    window.addEventListener('load', function() {
-        var noExpiryCheckbox = document.getElementById('no_expiry');
-        var validToInput = document.getElementById('valid_to');
-        var submitBtn = document.querySelector('button[type="submit"]');
-        
-        // 根据no_expiry的状态设置valid_to字段
-        function updateValidTo() {
-            validToInput.disabled = noExpiryCheckbox.checked;
-            if (noExpiryCheckbox.checked) {
-                validToInput.value = '';
-            }
-        }
-        
-        // 初始化时调用一次
-        updateValidTo();
-        
-        // 监听复选框变化
-        noExpiryCheckbox.addEventListener('change', updateValidTo);
+window.addEventListener('load', function() {
+    var noExpiryCheckbox = document.getElementById('no_expiry');
+    var validToInput = document.getElementById('valid_to');
+    var contractIdPreviewElement = document.getElementById('contract-id-preview');
 
-        // 更新合同ID预览
-        function updateContractIdPreview() {
-            var division = document.getElementById('division_code').value;
-            var category = document.getElementById('category_code').value;
-            var type = document.getElementById('type_code').value;
-            var validFrom = document.getElementById('valid_from').value;
+    // 根据no_expiry的状态设置valid_to字段 (Set valid_to field based on no_expiry status)
+    function updateValidTo() {
+        validToInput.disabled = noExpiryCheckbox.checked;
+        if (noExpiryCheckbox.checked) {
+            validToInput.value = '';
+        }
+    }
+    
+    // 初始化时调用一次 (Call once at initialization)
+    updateValidTo();
+    
+    // 监听复选框变化 (Listen for checkbox changes)
+    noExpiryCheckbox.addEventListener('change', updateValidTo);
+
+    // 更新合同ID预览 (Update contract ID preview)
+    function updateContractIdPreview() {
+        var division = document.getElementById('division_code').value;
+        var category = document.getElementById('category_code').value;
+        var type = document.getElementById('type_code').value;
+        var validFrom = document.getElementById('valid_from').value;
+        
+        if (division && category && type && validFrom) {
+            var date = new Date(validFrom);
+            var dateStr = date.getFullYear().toString() +
+                         String(date.getMonth() + 1).padStart(2, '0') +
+                         String(date.getDate()).padStart(2, '0');
             
-            if (division && category && type && validFrom) {
-                // 将生效日期字符串转换为日期对象
-                var date = new Date(validFrom);
-                var dateStr = date.getFullYear().toString() +
-                             String(date.getMonth() + 1).padStart(2, '0') +
-                             String(date.getDate()).padStart(2, '0');
-                
-                var previewValue = division + '-' + category + '-' + type + '-' + dateStr + '-V1';
-                document.getElementById('preview_contract_id').value = previewValue;
+            var previewValue = division + '-' + category + '-' + type + '-' + dateStr + '-V1';
+            if(contractIdPreviewElement) {
+                contractIdPreviewElement.textContent = previewValue;
             }
         }
+    }
 
-        // 添加生效日期变化的监听器
-        document.getElementById('valid_from').addEventListener('change', updateContractIdPreview);
-        
-        // 监听分类代码的变化
-        document.getElementById('division_code').addEventListener('change', updateContractIdPreview);
-        document.getElementById('category_code').addEventListener('change', updateContractIdPreview);
-        document.getElementById('type_code').addEventListener('change', updateContractIdPreview);
+    // 添加生效日期变化的监听器 (Add listener for valid_from date changes)
+    document.getElementById('valid_from').addEventListener('change', updateContractIdPreview);
+    
+    // 监听分类代码的变化 (Listen for classification code changes)
+    document.getElementById('division_code').addEventListener('change', updateContractIdPreview);
+    document.getElementById('category_code').addEventListener('change', updateContractIdPreview);
+    document.getElementById('type_code').addEventListener('change', updateContractIdPreview);
 
-        // 初始化时调用一次
-        updateContractIdPreview();
-    });
+    // 初始化时调用一次 (Call once at initialization)
+    updateContractIdPreview();
+});
 </script>
-{% endblock %}
 {% endblock %}

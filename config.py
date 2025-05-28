@@ -26,3 +26,9 @@ class Config:
     ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD') or 'admin'
     GUEST_USERNAME = os.environ.get('GUEST_USERNAME') or 'guest'
     GUEST_PASSWORD = os.environ.get('GUEST_PASSWORD') or 'guest'
+    
+    # 语言配置
+    LANGUAGES = ['en', 'zh']
+    BABEL_DEFAULT_LOCALE = 'en'  # 改为默认英文
+    BABEL_DEFAULT_TIMEZONE = 'Asia/Shanghai'
+    BABEL_TRANSLATION_DIRECTORIES = 'translations'

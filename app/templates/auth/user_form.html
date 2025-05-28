@@ -2,40 +2,44 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h1>{{ title }}</h1>
+    <h1>{{ _(title) }}</h1>
     <form method="post" class="mt-4">
         {{ form.hidden_tag() }}
         <div class="mb-3">
-            {{ form.username.label(class="form-label") }}
+            {# {{ form.username.label(class="form-label") }} #} <!-- Original line (原始行) -->
+            <label class="form-label" for="username">{{ _('username') }}</label> <!-- Modified line (修改行) -->
             {{ form.username(class="form-control" + (' is-invalid' if form.username.errors else '')) }}
             {% for error in form.username.errors %}
-            <div class="invalid-feedback">{{ error }}</div>
+            <div class="invalid-feedback">{{ _(error) }}</div>
             {% endfor %}
         </div>
         <div class="mb-3">
-            {{ form.password.label(class="form-label") }}
+            {# {{ form.password.label(class="form-label") }} #} <!-- Original line (原始行) -->
+            <label class="form-label" for="password">{{ _('password') }}</label> <!-- Modified line (修改行) -->
             {{ form.password(class="form-control" + (' is-invalid' if form.password.errors else '')) }}
             {% for error in form.password.errors %}
-            <div class="invalid-feedback">{{ error }}</div>
+            <div class="invalid-feedback">{{ _(error) }}</div>
             {% endfor %}
             {% if request.endpoint == 'auth.edit_user' %}
-            <div class="form-text">Leave blank to keep current password</div>
+            <div class="form-text">{{ _("leave_password_blank") }}</div>
             {% endif %}
         </div>
         <div class="mb-3">
-            {{ form.password2.label(class="form-label") }}
+            {# {{ form.password2.label(class="form-label") }} #} <!-- Original line (原始行) -->
+            <label class="form-label" for="password2">{{ _('confirm_password') }}</label> <!-- Modified line (修改行) -->
             {{ form.password2(class="form-control" + (' is-invalid' if form.password2.errors else '')) }}
             {% for error in form.password2.errors %}
-            <div class="invalid-feedback">{{ error }}</div>
+            <div class="invalid-feedback">{{ _(error) }}</div>
             {% endfor %}
         </div>
         <div class="mb-3 form-check">
             {{ form.is_admin(class="form-check-input") }}
-            {{ form.is_admin.label(class="form-check-label") }}
+            <label class="form-check-label" for="is_admin">{{ _('administrator') }}</label> {# Correctly translate the label text (正确翻译标签文本) #}
         </div>
         <div class="mb-3">
-            {{ form.submit(class="btn btn-primary") }}
-            <a href="{{ url_for('auth.user_list') }}" class="btn btn-secondary">Back</a>
+            {# {{ form.submit(class="btn btn-primary") }} #} <!-- Original line (原始行) -->
+            <button type="submit" name="submit" class="btn btn-primary">{{ _('submit') }}</button> <!-- Modified line (修改行) -->
+            <a href="{{ url_for('auth.user_list') }}" class="btn btn-secondary">{{ _("back") }}</a>
         </div>
     </form>
 </div>

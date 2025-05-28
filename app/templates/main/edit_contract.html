@@ -1,50 +1,49 @@
 {% extends "base.html" %}
 
-{% block title %}Edit Contract{% endblock %}
+{% block title %}{{ _('edit_contract') }}{% endblock %}
 
 {% block content %}
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Edit Contract</h2>
+        <h2>{{ _('edit_contract') }}</h2>
         <a href="{{ url_for('main.view_contract', contract_id=contract.contract_id) }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Back to Details
+            <i class="bi bi-arrow-left"></i> {{ _('back_to_details') }}
         </a>
     </div>
 
     <form method="POST" class="needs-validation" novalidate>
         {{ form.hidden_tag() }}
         
-        <!-- 基本信息 -->
         <div class="card mb-4">
             <div class="card-header">
-                <h5 class="card-title mb-0">Basic Information</h5>
+                <h5 class="card-title mb-0">{{ _('basic_information') }}</h5>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-12">
-                        <label for="subject" class="form-label">{{ form.subject.label }}</label>
+                        <label for="subject" class="form-label">{{ _('subject') }}</label>
                         {{ form.subject(class="form-control") }}
                         {% if form.subject.errors %}
                             {% for error in form.subject.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                <div class="invalid-feedback d-block">{{ _(error) }}</div>
                             {% endfor %}
                         {% endif %}
                     </div>
                     <div class="col-md-12">
-                        <label for="summary" class="form-label">{{ form.summary.label }}</label>
+                        <label for="summary" class="form-label">{{ _('summary') }}</label>
                         {{ form.summary(class="form-control", rows=3) }}
                         {% if form.summary.errors %}
                             {% for error in form.summary.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                <div class="invalid-feedback d-block">{{ _(error) }}</div>
                             {% endfor %}
                         {% endif %}
                     </div>
                     <div class="col-md-12">
-                        <label for="downloadLink" class="form-label">{{ form.downloadLink.label }}</label>
+                        <label for="downloadLink" class="form-label">{{ _('contract_link') }}</label>
                         {{ form.downloadLink(class="form-control") }}
                         {% if form.downloadLink.errors %}
                             {% for error in form.downloadLink.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                <div class="invalid-feedback d-block">{{ _(error) }}</div>
                             {% endfor %}
                         {% endif %}
                     </div>
@@ -52,15 +51,14 @@
             </div>
         </div>
 
-        <!-- 分类信息 -->
         <div class="card mb-4">
             <div class="card-header">
-                <h5 class="card-title mb-0">Classification</h5>
+                <h5 class="card-title mb-0">{{ _('classification') }}</h5>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label for="division_code" class="form-label">{{ form.division_code.label }}</label>
+                        <label for="division_code" class="form-label">{{ _('division_code') }}</label>
                         {{ form.division_code(class="form-select") }}
                         {% if form.division_code.errors %}
                             {% for error in form.division_code.errors %}
@@ -69,7 +67,7 @@
                         {% endif %}
                     </div>
                     <div class="col-md-4">
-                        <label for="category_code" class="form-label">{{ form.category_code.label }}</label>
+                        <label for="category_code" class="form-label">{{ _('category_code') }}</label>
                         {{ form.category_code(class="form-select") }}
                         {% if form.category_code.errors %}
                             {% for error in form.category_code.errors %}
@@ -78,7 +76,7 @@
                         {% endif %}
                     </div>
                     <div class="col-md-4">
-                        <label for="type_code" class="form-label">{{ form.type_code.label }}</label>
+                        <label for="type_code" class="form-label">{{ _('type_code') }}</label>
                         {{ form.type_code(class="form-select") }}
                         {% if form.type_code.errors %}
                             {% for error in form.type_code.errors %}
@@ -90,35 +88,34 @@
             </div>
         </div>
 
-        <!-- 日期信息 -->
         <div class="card mb-4">
             <div class="card-header">
-                <h5 class="card-title mb-0">Validity Period</h5>
+                <h5 class="card-title mb-0">{{ _('validity_period') }}</h5>
             </div>
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label for="valid_from" class="form-label">{{ form.valid_from.label }}</label>
+                        <label for="valid_from" class="form-label">{{ _('valid_from') }}</label>
                         {{ form.valid_from(class="form-control", type="date") }}
                         {% if form.valid_from.errors %}
                             {% for error in form.valid_from.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                <div class="invalid-feedback d-block">{{ _(error) }}</div>
                             {% endfor %}
                         {% endif %}
                     </div>
                     <div class="col-md-6">
-                        <label for="valid_to" class="form-label">{{ form.valid_to.label }}</label>
+                        <label for="valid_to" class="form-label">{{ _('valid_to') }}</label>
                         {{ form.valid_to(class="form-control", type="date") }}
                         {% if form.valid_to.errors %}
                             {% for error in form.valid_to.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                <div class="invalid-feedback d-block">{{ _(error) }}</div>
                             {% endfor %}
                         {% endif %}
                     </div>
                     <div class="col-md-12">
                         <div class="form-check">
                             {{ form.no_expiry(class="form-check-input") }}
-                            <label class="form-check-label" for="no_expiry">{{ form.no_expiry.label }}</label>
+                            <label class="form-check-label" for="no_expiry">{{ _('no_expiry_date') }}</label>
                         </div>
                     </div>
                 </div>
@@ -127,42 +124,41 @@
 
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-save"></i> Save Changes
+                <i class="bi bi-save"></i> {{ _('save_changes') }}
             </button>
         </div>
     </form>
 </div>
-
-<!-- 添加JavaScript代码 -->
-{% block scripts %}
-{{ super() }}
-<script>
-    // 修改JavaScript代码
-    window.addEventListener('load', function() {
-        var noExpiryCheckbox = document.getElementById('no_expiry');
-        var validToInput = document.getElementById('valid_to');
-        
-        // 根据no_expiry的状态设置valid_to字段
-        function updateValidTo() {
-            validToInput.disabled = noExpiryCheckbox.checked;
-            if (noExpiryCheckbox.checked) {
-                validToInput.value = '';
-            }
-        }
-        
-        // 初始化时调用一次
-        updateValidTo();
-        
-        // 监听复选框变化
-        noExpiryCheckbox.addEventListener('change', updateValidTo);
-    });
-
-    // 处理部门代码变化
-    document.getElementById('division_code').addEventListener('change', function() {
-        // 重新加载页面以更新类型代码选项
-        document.getElementById('type_code').value = '';
-        document.forms[0].submit();
-    });
-</script>
 {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var noExpiryCheckbox = document.getElementById('no_expiry');
+            var validToInput = document.getElementById('valid_to');
+            var divisionCodeSelect = document.getElementById('division_code');
+            var currentDivisionCode = divisionCodeSelect.value;
+            var form = document.querySelector('form');
+            
+            function updateValidTo() {
+                validToInput.disabled = noExpiryCheckbox.checked;
+                if (noExpiryCheckbox.checked) {
+                    validToInput.value = '';
+                }
+            }
+            
+            updateValidTo();
+            noExpiryCheckbox.addEventListener('change', updateValidTo);
+
+            // division_code 的 change 事件处理
+            divisionCodeSelect.addEventListener('change', function(e) {
+                if (this.value !== currentDivisionCode) {
+                    document.getElementById('type_code').value = '';
+                    currentDivisionCode = this.value;
+                    form.submit();
+                }
+            });
+        });
+    </script>
 {% endblock %}

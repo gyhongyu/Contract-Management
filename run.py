@@ -6,4 +6,4 @@ app = create_app()
 
 if __name__ == '__main__':
     # 启动开发服务器
-    app.run(debug=True)
+    app.run()

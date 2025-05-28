@@ -4,100 +4,68 @@ from wtforms import StringField, PasswordField, BooleanField, SelectField, TextA
 from wtforms.validators import DataRequired, Length, URL, ValidationError, Optional
 from datetime import date
 import pandas as pd
+from flask_babel import gettext as _
 
 # 登录表单
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(1, 64)])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember me')
+    username = StringField('username', validators=[DataRequired(), Length(1, 64)])
+    password = PasswordField('password', validators=[DataRequired()])
+    remember_me = BooleanField('remember_me')
 
 # 用户管理表单（仅管理员可用）
 class UserForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(message='Username is required.')])
-    password = PasswordField('Password', validators=[Optional()])
-    password2 = PasswordField('Confirm Password', validators=[Optional()])
-    is_admin = BooleanField('Administrator')
-    submit = SubmitField('Submit')
+    username = StringField('username', validators=[DataRequired(message='username_required')])
+    password = PasswordField('password', validators=[Optional()])
+    password2 = PasswordField('confirm_password', validators=[Optional()])
+    is_admin = BooleanField('administrator')
+    submit = SubmitField('submit')
 
     def validate_password2(self, field):
         if self.password.data and field.data != self.password.data:
-            raise ValidationError('Passwords do not match.')
+            raise ValidationError('passwords_not_match')
 
 # 合同表单
 class ContractForm(FlaskForm):
-    # 基本信息
-    subject = StringField('Subject', validators=[DataRequired(), Length(1, 256)])
-    summary = TextAreaField('Summary', validators=[DataRequired()])
-    downloadLink = StringField('Download Link', validators=[
-        DataRequired(),
-        URL(),
-        Length(1, 512)
+    subject = StringField('subject', validators=[DataRequired(message=_('field_required')), Length(1, 256, message=_('maximum_256_characters'))])
+    summary = TextAreaField('summary', validators=[DataRequired(message=_('field_required'))])
+    downloadLink = StringField('contract_link', validators=[
+        DataRequired(message=_('field_required')),
+        URL(message=_('invalid_url')),
+        Length(max=512, message=_('provide_url_max_512'))
     ])
-
-    # 分类信息
-    division_code = SelectField('Division Code', validators=[DataRequired()])
-    category_code = SelectField('Category Code', validators=[DataRequired()])
-    type_code = SelectField('Type Code', validators=[DataRequired()])
-
-    # 日期信息
-    valid_from = DateField('Valid From', validators=[DataRequired()])
-    valid_to = DateField('Valid To', validators=[])
-    no_expiry = BooleanField('No Expiry Date')
-    
-    # 预览合同ID
-    preview_contract_id = StringField('Contract ID Preview', render_kw={'readonly': True})
+    division_code = SelectField('division_code', validators=[DataRequired(message=_('field_required'))])
+    category_code = SelectField('category_code', validators=[DataRequired(message=_('field_required'))])
+    type_code = SelectField('type_code', validators=[DataRequired(message=_('field_required'))])
+    valid_from = DateField('valid_from', validators=[DataRequired(message=_('field_required'))])
+    valid_to = DateField('valid_to', validators=[])
+    no_expiry = BooleanField('no_expiry_date')
+    preview_contract_id = StringField('contract_id_preview', render_kw={'readonly': True})
+    submit = SubmitField('create_contract_button')
 
     def __init__(self, *args, **kwargs):
         super(ContractForm, self).__init__(*args, **kwargs)
-        # 从Excel文件读取选项
-        import pandas as pd
         excel_file = 'Database.xlsx'
-        
-        # 读取部门代码
         df_division = pd.read_excel(excel_file, sheet_name='Division Code')
-        self.division_code.choices = [
-            ('', 'Select Division Code')
-        ] + [
+        self.division_code.choices = [('', _('select_division_code'))] + [
             (row['Division Code'], f"{row['Division Code']} - {row['Description']}") 
             for _, row in df_division.iterrows()
         ]
-        
-        # 读取类别代码
         df_category = pd.read_excel(excel_file, sheet_name='Category Code')
-        self.category_code.choices = [
-            ('', 'Select Category Code')
-        ] + [
+        self.category_code.choices = [('', _('select_category_code'))] + [
             (row['Category Code'], f"{row['Category Code']} - {row['Description']}") 
             for _, row in df_category.iterrows()
         ]
-        
-        # 读取类型代码 - 移除部门过滤
         df_type = pd.read_excel(excel_file, sheet_name='Type Code')
-        self.type_code.choices = [
-            ('', 'Select Type Code')
-        ] + [
+        self.type_code.choices = [('', _('select_type_code'))] + [
             (row['Type Code'], f"{row['Type Code']} - {row['Description']}") 
             for _, row in df_type.iterrows()
         ]
 
-    # 移除类型代码的验证
-    # def validate_type_code(self, field):
-    #     import pandas as pd
-    #     excel_file = 'Database.xlsx'
-    #     df_type = pd.read_excel(excel_file, sheet_name='Type Code')
-    #     
-    #     # 检查选择的类型代码是否属于当前选择的部门
-    #     valid_types = df_type[df_type['Division Code'] == self.division_code.data]['Type Code'].tolist()
-    #     if field.data not in valid_types:
-    #         raise ValidationError('Selected type code is not valid for the chosen division.')
-
     def validate_valid_to(self, field):
         if not self.no_expiry.data and field.data and field.data < self.valid_from.data:
-            raise ValidationError('Valid to date cannot be earlier than valid from date.')
+            raise ValidationError(_('valid_to_earlier_than_valid_from'))
 
-    def validate_downloadLink(self, field):
-        if not field.data.startswith('https://drive.google.com/'):
-            raise ValidationError('Please provide a valid Google Drive link.')
+    # 移除 validate_downloadLink 方法，不再限制必须是 Google Drive 链接
 
 # 合同ID生成函数
 def generate_contract_id(division_code, category_code, type_code, signing_date, contracts):
@@ -126,32 +94,28 @@ def generate_contract_id(division_code, category_code, type_code, signing_date, 
 
 
 class ContractSearchForm(FlaskForm):
-    contract_id = StringField('Contract ID')
-    subject = StringField('Subject')
-    summary = StringField('Summary')
-    division_code = SelectField('Division Code', choices=[])
-    category_code = SelectField('Category Code', choices=[])
-    type_code = SelectField('Type Code', choices=[])
-    date_from = DateField('Date From', format='%Y-%m-%d')
-    date_to = DateField('Date To', format='%Y-%m-%d')
-    
+    contract_id = StringField('contract_id')
+    subject = StringField('subject')
+    summary = TextAreaField('summary')
+    division_code = SelectField('division_code', choices=[])
+    category_code = SelectField('category_code', choices=[])
+    type_code = SelectField('type_code', choices=[])
+    date_from = DateField('date_from', format='%Y-%m-%d')
+    date_to = DateField('date_to', format='%Y-%m-%d')
     def __init__(self, *args, **kwargs):
         super(ContractSearchForm, self).__init__(*args, **kwargs)
-        # 从Excel文件读取选项
         df_division = pd.read_excel('Database.xlsx', sheet_name='Division Code')
         df_category = pd.read_excel('Database.xlsx', sheet_name='Category Code')
         df_type = pd.read_excel('Database.xlsx', sheet_name='Type Code')
-        
-        # 修改：只使用代码作为选项值，描述仅用于显示
-        self.division_code.choices = [('', 'All')] + [
+        self.division_code.choices = [('', 'all')] + [
             (row['Division Code'], f"{row['Division Code']} - {row['Description']}") 
             for _, row in df_division.iterrows()
         ]
-        self.category_code.choices = [('', 'All')] + [
+        self.category_code.choices = [('', 'all')] + [
             (row['Category Code'], f"{row['Category Code']} - {row['Description']}") 
             for _, row in df_category.iterrows()
         ]
-        self.type_code.choices = [('', 'All')] + [
+        self.type_code.choices = [('', 'all')] + [
             (row['Type Code'], f"{row['Type Code']} - {row['Description']}") 
             for _, row in df_type.iterrows()
         ]

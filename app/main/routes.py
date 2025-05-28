@@ -7,6 +7,8 @@ from ..models import Contract
 from .. import db, bootstrap
 from ..forms import ContractForm  # 添加这行导入语句
 from ..forms import ContractSearchForm
+from flask import session, redirect, url_for
+from ..babel import _ # 确保导入翻译函数
 
 @bp.route('/')
 @bp.route('/index')
@@ -61,7 +63,7 @@ def view_contract(contract_id):
 def edit_contract(contract_id):
     # 检查用户权限
     if not current_user.is_admin:
-        flash('Only administrators can edit contracts.', 'danger')
+        flash(_('only_admin_edit_contracts'), 'danger')
         return redirect(url_for('main.index'))
     
     contract = Contract.query.filter_by(contract_id=contract_id).first_or_404()
@@ -109,7 +111,7 @@ def edit_contract(contract_id):
         form.populate_obj(contract)
         contract.updated_at = datetime.utcnow()
         db.session.commit()
-        flash('Contract has been updated.', 'success')
+        flash(_('contract_updated_successfully'), 'success')
         return redirect(url_for('main.view_contract', contract_id=contract.contract_id))
     
     return render_template('main/edit_contract.html', form=form, contract=contract, datetime=datetime)
@@ -119,13 +121,13 @@ def edit_contract(contract_id):
 def delete_contract(contract_id):
     # 检查用户权限
     if not current_user.is_admin:
-        flash('Only administrators can delete contracts.', 'danger')
+        flash(_('only_admin_delete_contracts'), 'danger')
         return redirect(url_for('main.index'))
     
     contract = Contract.query.filter_by(contract_id=contract_id).first_or_404()
     db.session.delete(contract)
     db.session.commit()
-    flash('Contract has been deleted.', 'success')
+    flash(_('contract_deleted_successfully'), 'success')
     return redirect(url_for('main.index'))
 
 
@@ -133,6 +135,21 @@ def delete_contract(contract_id):
 @login_required
 def new_contract():
     form = ContractForm()
+    
+    # 如果是GET请求且session中有保存的表单数据，恢复数据
+    if request.method == 'GET' and 'saved_form_data' in session:
+        for field, value in session['saved_form_data'].items():
+            if field in form._fields:
+                if field == 'valid_from' or field == 'valid_to':
+                    try:
+                        value = datetime.strptime(value, '%Y-%m-%d').date()
+                    except (ValueError, TypeError):
+                        continue
+                elif field == 'no_expiry':
+                    value = value.lower() == 'true'
+                setattr(form._fields[field], 'data', value)
+        # 清除session中的表单数据
+        session.pop('saved_form_data', None)
     
     if form.validate_on_submit():
         try:
@@ -178,26 +195,25 @@ def new_contract():
                     'redirect': url_for('main.view_contract', contract_id=contract.contract_id)
                 })
             
-            flash('Contract has been created successfully.', 'success')
+            flash(_('contract_created_successfully'), 'success')
             return redirect(url_for('main.view_contract', contract_id=contract.contract_id))
             
         except Exception as e:
             db.session.rollback()
             # 添加详细的错误日志
-            print(f'Error creating contract: {str(e)}')  # 开发环境查看
-            print(f'Form data: {form.data}')  # 打印表单数据
+            print(f'Error creating contract: {str(e)}')  # 开发环境查看 (Error creating contract: {error})
+            print(f'Form data: {form.data}')  # 打印表单数据 (Print form data)
             
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return jsonify({
                     'status': 'error',
-                    'message': f'Error creating contract: {str(e)}'  # 返回具体错误信息
+                    'message': _('error_creating_contract', error=str(e))  # 返回具体错误信息 (Return specific error message)
                 }), 400
             
-            flash(f'Error creating contract: {str(e)}', 'danger')  # 显示具体错误
-            return render_template('main/new_contract.html', form=form, datetime=datetime)
+            flash(_('error_creating_contract', error=str(e)), 'danger')  # 显示具体错误 (Show specific error)
+            # return render_template('main/new_contract.html', form=form, datetime=datetime) # Removed this line as it was causing the error
     
-    return render_template('main/new_contract.html', form=form, datetime=datetime)
-
+    return render_template('main/new_contract.html', form=form, datetime=datetime) # This line should be at this indentation level
 
 @bp.route('/search')
 @login_required
@@ -239,3 +255,12 @@ def search_contracts():
                           pagination=pagination,
                           is_search=is_search,
                           datetime=datetime)
+
+
+@bp.route('/set_language/<lang>', methods=['GET', 'POST'])
+def set_language(lang):
+    session['language'] = lang
+    # 移除表单数据保存的相关代码，只保留语言设置
+    return_url = request.form.get('return_to') if request.method == 'POST' else \
+                 request.args.get('return_to') or request.referrer or url_for('main.index')
+    return redirect(return_url)

@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}Contract Details{% endblock %}
+{% block title %}{{ _('contract_details') }}{% endblock %}
 
 {% block content %}
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Contract Details</h2>
+        <h2>{{ _('contract_details') }}</h2>
         <div class="btn-group">
             <a href="{{ url_for('main.index') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back to List
+                <i class="bi bi-arrow-left"></i> {{ _('back_to_list') }}
             </a>
             {% if current_user.is_admin %}
             <a href="{{ url_for('main.edit_contract', contract_id=contract.contract_id) }}" 
                class="btn btn-primary">
-                <i class="bi bi-pencil"></i> Edit
+                <i class="bi bi-pencil"></i> {{ _('edit') }}
             </a>
             <button type="button" 
                     class="btn btn-danger" 
                     data-bs-toggle="modal" 
                     data-bs-target="#deleteModal">
-                <i class="bi bi-trash"></i> Delete
+                <i class="bi bi-trash"></i> {{ _('delete') }}
             </button>
             {% endif %}
         </div>
@@ -28,28 +28,28 @@
     <!-- 基本信息 -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="card-title mb-0">Basic Information</h5>
+            <h5 class="card-title mb-0">{{ _('basic_information') }}</h5>
         </div>
         <div class="card-body">
             <div class="row g-3">
-                <div class="col-md-6">
-                    <h6>Contract ID</h6>
+                <div class="col-md-12">
+                    <h6>{{ _('contract_id') }}</h6>
                     <p>{{ contract.contract_id }}</p>
                 </div>
                 <div class="col-md-12">
-                    <h6>Subject</h6>
+                    <h6>{{ _('subject') }}</h6>
                     <p>{{ contract.subject }}</p>
                 </div>
                 <div class="col-md-12">
-                    <h6>Summary</h6>
+                    <h6>{{ _('summary') }}</h6>
                     <p>{{ contract.summary }}</p>
                 </div>
                 {% if current_user.is_admin %}
                 <div class="col-md-12">
-                    <h6>Contract Link</h6>
+                    <h6>{{ _('contract_link') }}</h6>
                     <p>
                         <a href="{{ contract.download_link }}" target="_blank" rel="noopener noreferrer">
-                            <i class="bi bi-file-earmark-text"></i> View Contract
+                            <i class="bi bi-file-earmark-text"></i> {{ _('view_contract') }}
                         </a>
                     </p>
                 </div>
@@ -61,20 +61,20 @@
     <!-- 分类信息 -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="card-title mb-0">Classification</h5>
+            <h5 class="card-title mb-0">{{ _('classification') }}</h5>
         </div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <h6>Division Code</h6>
+                    <h6>{{ _('division_code') }}</h6>
                     <p>{{ contract.division_code }} - {{ division_desc }}</p>
                 </div>
                 <div class="col-md-4">
-                    <h6>Category Code</h6>
+                    <h6>{{ _('category_code') }}</h6>
                     <p>{{ contract.category_code }} - {{ category_desc }}</p>
                 </div>
                 <div class="col-md-4">
-                    <h6>Type Code</h6>
+                    <h6>{{ _('type_code') }}</h6>
                     <p>{{ contract.type_code }} - {{ type_desc }}</p>
                 </div>
             </div>
@@ -84,23 +84,17 @@
     <!-- 有效期信息 -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="card-title mb-0">Validity Period</h5>
+            <h5 class="card-title mb-0">{{ _('validity_period') }}</h5>
         </div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-6">
-                    <h6>Valid From</h6>
+                    <h6>{{ _('valid_from') }}</h6>
                     <p>{{ contract.valid_from.strftime('%Y-%m-%d') }}</p>
                 </div>
                 <div class="col-md-6">
-                    <h6>Valid To</h6>
-                    <p>
-                        {% if contract.valid_to is none %}
-                        Permanent
-                        {% else %}
-                        {{ contract.valid_to.strftime('%Y-%m-%d') }}
-                        {% endif %}
-                    </p>
+                    <h6>{{ _('valid_to') }}</h6>
+                    <p>{% if contract.valid_to %}{{ contract.valid_to.strftime('%Y-%m-%d') }}{% else %}{{ _('permanent') }}{% endif %}</p>
                 </div>
             </div>
         </div>
@@ -109,21 +103,21 @@
     <!-- 系统信息 -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="card-title mb-0">System Information</h5>
+            <h5 class="card-title mb-0">{{ _('system_information') }}</h5>
         </div>
         <div class="card-body">
             <div class="row g-3">
                 <div class="col-md-4">
-                    <h6>Created By</h6>
+                    <h6>{{ _('created_by') }}</h6>
                     <p>{{ contract.creator }}</p>
                 </div>
                 <div class="col-md-4">
-                    <h6>Created At</h6>
+                    <h6>{{ _('created_at') }}</h6>
                     <p>{{ contract.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
                 </div>
                 <div class="col-md-4">
-                    <h6>Last Updated</h6>
-                    <p>{{ contract.updated_at.strftime('%Y-%m-%d %H:%M:%S') if contract.updated_at else 'Never' }}</p>
+                    <h6>{{ _('last_updated') }}</h6>
+                    <p>{{ contract.updated_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
                 </div>
             </div>
         </div>
@@ -136,17 +130,17 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Confirm Delete</h5>
+                <h5 class="modal-title">{{ _("confirm_delete") }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                Are you sure you want to delete contract: {{ contract.contract_id }}?
+                {{ _("confirm_delete_contract", contract_id=contract.contract_id) }}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <form action="{{ url_for('main.delete_contract', contract_id=contract.contract_id) }}" 
-                      method="POST" style="display: inline;">
-                    <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _("cancel") }}</button>
+                <form action="{{ url_for('main.delete_contract', contract_id=contract.contract_id) }}"
+                    method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">{{ _("delete") }}</button>
                 </form>
             </div>
         </div>
